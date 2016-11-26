@@ -83,12 +83,9 @@ round(mcor, digits=2)
 cor1 = cor(data)
 corrplot(cor1, method = "number")
 
-
-
 # Fine-tune the models parameters. Set seed to get reproducible random results
 # use seed before random data splitting
 set.seed(123)
-
 
 # For a stratified random sampling you can use caTools
 split = sample.split(data$medv, SplitRatio = 0.7)
@@ -97,20 +94,16 @@ test = subset(data, split==FALSE)
 
 
 
-
 # Preliminary Model selection checks                        
 # Lets double check that the dependent variable is normally distributed.  
 
-
 x=train$medv #First lets assign dependent variable to x
-
 
 # Check if the dependent variable is normally distributed
 hist(x, freq = FALSE, col="grey", main="Histogram of Dependent Variable", xlab="medv")
 xbar <-mean(x)
 S=sd(x)
 curve(dnorm(x,xbar,S), col="blue", add=T)
-
 
 # Recording and Transforming variables          
 
@@ -127,9 +120,9 @@ xbar <-mean(x)
 S=sd(x)
 curve(dnorm(x,xbar,S), col="", add=T)
 
-
+##################################
 # Building the prediction model
-
+##################################
 RegressionModel <- lm(logmedv~crim+rm+dis+ptratio+lstat, data=train)
 summary(RegressionModel)
 
@@ -149,9 +142,9 @@ head(prediction)
 head(test$logmedv)
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#####################################################
 #    Model Performance                              #
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#####################################################
 # Evaluate the performance of the performance using nmetric function: use "rminer" package
 mmetric(test$logmedv,prediction,c("MAE","RMSE","MAPE","RMSPE","RAE","RRSE","COR","R2"))
 
@@ -171,10 +164,10 @@ SST
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##################################################
 # DECISION TREE 
 # Create a CART modelling - Regression
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##################################################
 
 # use "rpart" package 
 tree = rpart(logmedv~crim+rm+dis+ptratio+lstat, data=train)
@@ -212,8 +205,6 @@ SST
 
 MSE <- mean((treePredic - test$logmedv)^2)
 MSE
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #    Model Performance                              #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -234,7 +225,6 @@ cp.grid = expand.grid( .cp = (0:10)*0.001)
 
 1*0.001 
 
-
 # Cross-validation
 tr = train(logmedv~crim+rm+dis+ptratio+lstat, data=train, method = "rpart", trControl = tr.control, tuneGrid = cp.grid)
 tr
@@ -246,8 +236,6 @@ prp(best.tree)
 
 printcp(best.tree) # display the results 
 
-
-
 ##########################################################
 # Generate the prediction model - apply model to test data
 ###########################################################
@@ -258,9 +246,6 @@ best.tree.pred = predict(best.tree, newdata=test)
 head(best.tree.pred)
 
 head(test$logmedv)
-
-
-
 
 #############################################
 #    Evaluate the accuracy of Model 
@@ -276,7 +261,6 @@ SST
 1 - SSE_tree/SST_tree
 
 mean((best.tree.pred - test$logmedv)^2)
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #    Model Performance                              #
